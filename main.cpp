@@ -1,25 +1,23 @@
 #include <iostream>
-#include "headers/geometryHeader.h"
 #include <cmath>
+#include <vector>
 
-double PI = 3.141592653589793;
+
+// INCLUDES OF HANDMADE HEADERS 
+#include "headers/densityFunctions.h"
+#include "headers/geometryHeader.h"
 
 
 int main(void){
     
-    using namespace std; 
+   using namespace std;
 
 
-    for (double theta = 0; theta < PI; theta += (PI / 100.0)){ 
-        for (double phi = -PI; phi < PI; phi += (PI / 100.0)){
-             
-            double x = sin(theta) * cos(phi);
-            double y = sin(theta) * sin(phi);
-            double z = cos(theta);
 
-           cout << x << "," << y << "," << z << "," << Ylm(5, 3, theta, phi) << endl;            
-        }
+    for (int i = 1; i < 100000; i++){
+        cout << sample_from_pdf(eng, 1.0, 1.0, 5.0, 0.1) << endl;
     }
+    
 
     return 0;
 }
