@@ -13,9 +13,9 @@ inline thread_local std::mt19937 eng{std::random_device{}()};
 
 
 // FERMI PDF OF 3 PARAMETERS
-double Fermi3param_PDF(double r, double r_0, double w, double R, double a){
+double Fermi3param_PDF(double r, double r_0, double w, double R, double a, double ferqReq){
     using namespace std;
-    return r_0 * ( (1 + w * pow( r / R , 2) ) / (1 + exp( (r - R) / a )) );
+    return r_0 * ( (1 + w * pow( (r / ferqReq) / R , 2) ) / (1 + exp( ((r / ferqReq) - R) / a )) );
 }
 
 
@@ -23,16 +23,16 @@ double Fermi3param_PDF(double r, double r_0, double w, double R, double a){
 //--------------------------------
 // SAMPLING FROM ARBITRARY 1D PDF 
 //--------------------------------
-double sample_from_pdf(std::mt19937 &gen, double r_0, double w, double R, double a)
+double sample_from_pdf(std::mt19937 &gen, double r_0, double w, double R, double a, double rsp)
 {
 
-    std::uniform_real_distribution<double> x_dist(0.0, 10.0);
-    std::uniform_real_distribution<double> y_dist(0.0, 2.0);
+    std::uniform_real_distribution<double> x_dist(0.0, 15.0);
+    std::uniform_real_distribution<double> y_dist(0.0, 4.0);
 
     while (true) {
         double x = x_dist(gen);
         double y = y_dist(gen);
-        double p = Fermi3param_PDF(x, r_0, w, R, a);
+        double p = Fermi3param_PDF(x, r_0, w, R, a, rsp);
 
         if (y < p)
             return x; // accepted sample
