@@ -14,8 +14,11 @@ int main(void){
 
 
 
-    for (int i = 1; i < 100000; i++){
-        cout << sample_from_pdf(eng, 1.0, 1.0, 5.0, 0.1) << endl;
+    for (int i = 1; i < 150; i++){
+
+        vector nucleon = sampleNucleon(eng);
+
+        cout << nucleon[0] << "," << nucleon[1] << "," << nucleon[2] << endl;
     }
     
 
