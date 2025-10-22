@@ -7,7 +7,7 @@
 #include "headers/densityFunctions.h"
 #include "headers/geometryHeader.h"
 
-
+//Main function
 int main(void){
     
    using namespace std;
