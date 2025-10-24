@@ -16,7 +16,7 @@
 
 
 
-const double sigma_nn = 0.6;
+const double sigma_nn = 10.0;
 double nucleon_radius = std::sqrt(sigma_nn / M_PI);
 
 
@@ -31,14 +31,14 @@ int main(void){
     double SH_negative_coef[3][3] = {{0.0, 0.0, 0.0},{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}};
 
     // Rad_0, rho_0, a, w
-    double rad_density_params[4] = {{1.0}, {1.0}, {1.0}, {1.0}};
+    double rad_density_params[4] = {{0.1}, {1.0}, {1.0}, {1.0}};
 
-    Nucleus nucleus = createNucleus(10,  1.0, SH_positive_coef, SH_negative_coef, rad_density_params);  
+    Nucleus nucleus = createNucleus(20,  nucleon_radius, SH_positive_coef, SH_negative_coef, rad_density_params);  
   
 
 
     double SH_positive_coef2[3][3] = {{0.0, 0.0, 0.0},{0.0, 0.0, 0.0},{100.0, 0.0, 0.0}};
-    Nucleus nucleus2 = createNucleus(10,  1.0, SH_positive_coef2, SH_negative_coef, rad_density_params);  
+    Nucleus nucleus2 = createNucleus(20,  1.0, SH_positive_coef2, SH_negative_coef, rad_density_params);  
     
     ofstream file("nucleus1.csv");
     

@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-sigma_nn = 0.6
+sigma_nn = 10.0
 radius = np.sqrt(sigma_nn / np.pi)
 
 
@@ -58,13 +58,13 @@ x = data[:,0]
 y = data[:,1]
 z = data[:,2]
 
-for (xa, ya, za), r in zip(np.array([x, y, z]).T, [radius]*x0.size):
-    ax.plot_surface(
-        xa + r * x_sphere,
-        ya + r * y_sphere,
-        za + r * z_sphere,
-        color='b', alpha=0.5, linewidth=0
-    )
+# for (xa, ya, za), r in zip(np.array([x, y, z]).T, [radius]*x0.size):
+#     ax.plot_surface(
+#         xa + r * x_sphere,
+#         ya + r * y_sphere,
+#         za + r * z_sphere,
+#         color='b', alpha=0.5, linewidth=0
+#     )
 # ax.scatter(x, y, z, color="red", s = radius)  # color by c
 
 ax.set_xlabel("X")
