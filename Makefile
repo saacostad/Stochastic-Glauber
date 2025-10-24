@@ -5,12 +5,13 @@ CXXFLAGS = -lgsl
 # Targets and files 
 TARGET = exec
 SRC = main.cpp
-DATAFILE = data.csv 
+DATAFILE = nucleus1.csv nucleus2.csv 
 GRAPH = graph.py
 
 # Default  rule
 all: build clean run_all
 nograph: build clean run_no_graph
+graph: graph 
 
 # Compile the C++ program 
 build: $(SRC)
@@ -30,3 +31,6 @@ run_all: $(SRC) $(GRAPH)
 
 run_no_graph: $(SRC)
 	./$(TARGET)
+
+graph: $(GRAPH)
+	python $(GRAPH)
