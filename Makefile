@@ -1,12 +1,12 @@
 # Compiler
 CXX = g++ 
-CXXFLAGS = -lgsl
+CXXFLAGS = -lgsl -std=c++23
 
 # Targets and files 
 TARGET = exec
 SRC = main.cpp
-DATAFILE = nucleus1.csv nucleus2.csv 
-GRAPH = graph.py
+DATAFILE = systems/nucleusTest.csv systems/nucleus1.csv systems/nucleus2.csv 
+GRAPH = outils/graph.py
 
 # Default  rule
 all: build clean run_all
@@ -25,7 +25,7 @@ clean: $(SRC)
 
 # Run the program depending on what one wants
 run_all: $(SRC) $(GRAPH)
-	./$(TARGET) >> $(DATAFILE)
+	./$(TARGET)
 	python $(GRAPH)
 
 
