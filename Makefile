@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -lgsl -std=c++23 -O3 -fopenmp -fmodules 
 
 # Targets and files 
-TARGET = exec
+TARGET = StocasticGlauber
 SRC = main.cpp
 DATAFILE = systems/Au79-Au79/projectiles.csv systems/Au79-Au79/targets.csv data.csv
 # DATAFILE = 
