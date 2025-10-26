@@ -7,6 +7,7 @@
 #include <cmath>
 #include <sstream>
 
+#include "nucleonSampling.h"
 #include "createNucleus.h"
 
 
@@ -173,4 +174,22 @@ void writeSystem(   std::string path,
     create_file_nucleus(projPath.str(), projectileNucleus, projectileNucleons, nucleon_radius, projectile_SH_positive_coef, projectile_SH_negative_coef, projectile_rad_density_params);
     cerr << "FINISHED WRITTING TO FILE " << projPath.str() << endl;
 
+}
+
+
+
+
+
+void readSystem(std::string path, double E, std::vector<Nucleus> (&tarjets), std::vector<Nucleus> (&projectiles), int tarjet_nucleons, int projectile_nucleons){
+    /* This functions reads a whole system and saves it's values inside of std::vector<Nucleus> */ 
+
+    std::ostringstream tarPath, projPath;
+
+    tarPath << path << "/" << E << "/" << "tarjet.csv";
+    projPath << path << "/" << E << "/" << "projectile.csv";
+
+    tarjets = read_file_nucleus(tarPath.str(), tarjet_nucleons); 
+    projectiles = read_file_nucleus(projPath.str(), projectile_nucleons);
+
+    return;
 }
