@@ -5,7 +5,7 @@
 
 #include "nucleonSampling.h"
 
-std::array<int, 4> checkCollisions(Nucleus nucleus1, Nucleus nucleus2, double b, double rad2){
+std::array<int, 3> checkCollisions(Nucleus nucleus1, Nucleus nucleus2, double b, double rad2){
     
     int N_coll_1 = 0;
     int N_part_1 = 0;
@@ -58,7 +58,7 @@ std::array<int, 4> checkCollisions(Nucleus nucleus1, Nucleus nucleus2, double b,
 
     }
 
-    std::array<int, 4> ret = {N_coll_1, N_coll_2, N_part_1, N_part_2};
+    std::array<int, 3> ret = {N_coll_1, N_part_1, N_part_2};
    return ret; 
 }
 

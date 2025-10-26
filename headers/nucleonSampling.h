@@ -73,39 +73,43 @@ std::array<double, 3> sampleNucleon(std::mt19937 &gen, Nucleus prevNucleus,
                                     double (&SH_positive_coef)[N][M],
                                     double (&SH_negative_coef)[N][M],
                                     double *rad_density_params){
-    // This function creates by its own a new nucleon randomly
-    using namespace std; 
 
-    vector angles = angularDistribution(gen);
+    while(true){
+        // This function creates by its own a new nucleon randomly
+        using namespace std; 
 
-    double theta = angles[0];
-    double phi = angles[1];
+        vector angles = angularDistribution(gen);
 
-    double rho = radialSampling(gen, theta, phi,
-                                SH_positive_coef, SH_negative_coef, 
-                                rad_density_params);
+        double theta = angles[0];
+        double phi = angles[1];
 
-    // double rho = 1.0;
-
-    // vector<double> ret = {rho, theta, phi};
-
-    array<double, 3> ret = {   rho * sin(theta) * cos(phi),
-                               rho * sin(theta) * sin(phi),
-                               rho * cos(theta)};
-    
-    
-    for (Nucleon nuc : prevNucleus){
-        if ( pow(ret[0] - nuc[0], 2) + pow(ret[1] - nuc[1], 2) + pow(ret[2] - nuc[2], 2) < nuc_rad_4pow2 ){
-            return sampleNucleon(   eng, prevNucleus,
-                                    nuc_rad_4pow2,
-                                    SH_positive_coef,
-                                    SH_negative_coef,
+        double rho = radialSampling(gen, theta, phi,
+                                    SH_positive_coef, SH_negative_coef, 
                                     rad_density_params);
+
+        // double rho = 1.0;
+
+        // vector<double> ret = {rho, theta, phi};
+
+        array<double, 3> ret = {   rho * sin(theta) * cos(phi),
+                                   rho * sin(theta) * sin(phi),
+                                   rho * cos(theta)};
+        
+        
+            bool valid = true;
+        for (const Nucleon &nuc : prevNucleus) {
+            double dx = ret[0] - nuc[0];
+            double dy = ret[1] + nuc[1];
+            double dz = ret[2] + nuc[2];
+            if (dx*dx + dy*dy + dz*dz < nuc_rad_4pow2) {
+                valid = false;
+                break;
+            }
         }
-    }
-    
-    
-    return ret;
+
+        if (valid)
+            return ret;  // ✅ valid nucleon found — done    }
+    } 
 }
 
 
@@ -119,7 +123,8 @@ template <size_t N, size_t M>
 std::vector<std::array<double, 3>> createNucleus(   int A, double nucleon_radius,
                                                     double (&SH_positive_coef)[N][M],
                                                     double (&SH_negative_coef)[N][M],
-                                                    double *rad_density_params
+                                                    double *rad_density_params,
+                                                    std::mt19937 &eng
                                                 ){
                         
     std::vector<std::array<double, 3>> nucleus;
