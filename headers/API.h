@@ -166,8 +166,8 @@ void writeSystem(   std::string path,
     ostringstream tarjetPath;
     ostringstream projPath;
 
-    tarjetPath << path << "/" << Ecm << "/tarjet.csv";
-    projPath << path << "/" << Ecm << "/projectile.csv";
+    tarjetPath << path << "/" << Ecm << "/targets.csv";
+    projPath << path << "/" << Ecm << "/projectiles.csv";
 
     create_file_nucleus(tarjetPath.str(), tarjetNucleus, tarjetNucleons, nucleon_radius, tarjet_SH_positive_coef, tarjet_SH_negative_coef, projectile_rad_density_params);
     cerr << "FINISHED WRITTING TO FILE " << tarjetPath.str() << endl; 
@@ -185,8 +185,8 @@ void readSystem(std::string path, double E, std::vector<Nucleus> (&tarjets), std
 
     std::ostringstream tarPath, projPath;
 
-    tarPath << path << "/" << E << "/" << "tarjet.csv";
-    projPath << path << "/" << E << "/" << "projectile.csv";
+    tarPath << path << "/" << E << "/" << "targets.csv";
+    projPath << path << "/" << E << "/" << "projectiles.csv";
 
     tarjets = read_file_nucleus(tarPath.str(), tarjet_nucleons); 
     projectiles = read_file_nucleus(projPath.str(), projectile_nucleons);

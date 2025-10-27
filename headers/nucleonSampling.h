@@ -99,8 +99,13 @@ std::array<double, 3> sampleNucleon(std::mt19937 &gen, Nucleus prevNucleus,
             bool valid = true;
         for (const Nucleon &nuc : prevNucleus) {
             double dx = ret[0] - nuc[0];
-            double dy = ret[1] + nuc[1];
-            double dz = ret[2] + nuc[2];
+
+            double dy = ret[1] - nuc[1];
+            double dz = ret[2] - nuc[2];
+
+            // double dy = ret[1] + nuc[1];
+            // double dz = ret[2] + nuc[2];
+
             if (dx*dx + dy*dy + dz*dz < nuc_rad_4pow2) {
                 valid = false;
                 break;
