@@ -14,6 +14,8 @@ with open("systems/NNCrossSection.csv", newline='') as f:
 
 radius = np.sqrt(sigma_nn[200] / np.pi)
 
+nP = 238
+nT = 238
 
 # data1 = np.genfromtxt("systems/Au79-Au79/200/targets.csv", delimiter=",", max_rows=197)
 # data2 = np.genfromtxt("systems/Au79-Au79/200/projectiles.csv", delimiter=",", max_rows=197)
@@ -21,30 +23,35 @@ radius = np.sqrt(sigma_nn[200] / np.pi)
 # data1 = np.genfromtxt("systems/Eliptic/200/targets.csv", delimiter=",", max_rows=197)
 # data2 = np.genfromtxt("systems/Eliptic/200/projectiles.csv", delimiter=",", max_rows=197)
 
-data1 = np.genfromtxt("systems/GoldTest/200/targets.csv", delimiter=",", max_rows=197)
-data2 = np.genfromtxt("systems/GoldTest/200/projectiles.csv", delimiter=",", max_rows=197)
+data1 = np.genfromtxt("systems/test_uranium/200/targets.csv", delimiter=",", max_rows=2 * nT)
+data2 = np.genfromtxt("systems/test_uranium/200/projectiles.csv", delimiter=",", max_rows=nP)
 
 
-x0 = data1[:197,0]
-y0 = data1[:197,1]
-z0 = data1[:197,2]
-
-x1 = data2[:197,0] 
-y1 = data2[:197,1] + 6.0
-z1 = data2[:197,2] + 20.0
-
+x0 = data1[:nT,0]
+y0 = data1[:nT,1]
+z0 = data1[:nT,2]
 
 #
+# x1 = data1[nT:2 * nT,0]
+# y1 = data1[nT:2 * nT,1] 
+# z1 = data1[nT:2 * nT,2] + 25.0
+
+
+x1 = data2[:nP,0] 
+y1 = data2[:nP,1] + 6.0
+z1 = data2[:nP,2] + 25.0
+
+
 """ PYVISTA """
 plotter = pv.Plotter()
 
 for (x, y, z), r in zip(np.array([x0, y0, z0]).T, [radius]*x0.size):
     sphere = pv.Sphere(radius=r, center=(x, y, z))
-    plotter.add_mesh(sphere, color='blue', opacity=0.3)
+    plotter.add_mesh(sphere, color=(1.0, 149 / 245, 204 / 245), opacity=0.3)
 
 for (x, y, z), r in zip(np.array([x1, y1, z1]).T, [radius]*x0.size):
     sphere = pv.Sphere(radius=r, center=(x, y, z))
-    plotter.add_mesh(sphere, color='red', opacity=0.3)
+    plotter.add_mesh(sphere, color=(1.0, 149 / 245, 204 / 245), opacity=0.3)
 
 
 
@@ -58,7 +65,7 @@ plotter.show()
 
 
 
-# """ Matplotlib """
+# # """ Matplotlib """
 # fig, ax = plt.subplots()
 #
 # rad = 15

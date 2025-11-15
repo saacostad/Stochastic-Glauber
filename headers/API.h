@@ -135,8 +135,8 @@ void writeSystem(   std::string path,
     double nucleon_radius = NucleonRadius(Snn);
     
     // CREATION OF THE PARAMETERS FOR EACH NUCLEUS
-    double tarjet_SH_positive_coef[3][3];
-    double tarjet_SH_negative_coef[3][3];
+    double tarjet_SH_positive_coef[7][7];
+    double tarjet_SH_negative_coef[7][7];
     double tarjet_rad_density_params[4];
 
     string tarjet_path_SH_pos_coef = "SHE/tp.csv";
@@ -148,8 +148,8 @@ void writeSystem(   std::string path,
     fillRadialDensityParams(tarjet_path_rad_den, tarjet_rad_density_params);
 
         
-    double projectile_SH_positive_coef[3][3];
-    double projectile_SH_negative_coef[3][3];
+    double projectile_SH_positive_coef[7][7];
+    double projectile_SH_negative_coef[7][7];
     double projectile_rad_density_params[4];
 
     string projectile_path_SH_pos_coef = "SHE/pp.csv";

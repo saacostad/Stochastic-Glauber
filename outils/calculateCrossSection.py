@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 
 
 sigma_nn = 41.23344641671908
+n = 238
 
-
-data = np.genfromtxt("data2.csv", delimiter=",")
+data = np.genfromtxt("rotated_uranium.csv", delimiter=",")
 
 
 Ncolls = data[:, 1]
 x = data[:, 0]
-y_prev = 2 * np.pi * ( 1 - np.pow(1 - Ncolls / (197**2), 197**2) )
+y_prev = 2 * np.pi * ( 1 - np.pow(1 - Ncolls / (n**2), n**2) )
 
-
+NO_part = data[:, 2]
 
 
 plt.style.use('ggplot')
@@ -31,13 +31,14 @@ plt.show()
 
 
 
-plt.plot(x, data[:,1], lw = 2.5)
+plt.plot(x, data[:,1], lw = 2.5, label = r"$N_{col}$")
+plt.plot(x, data[:,2], lw = 2.5, label = r"$N_{part}$")
 
 plt.grid(True, linestyle='--', alpha=0.5)
 plt.xlabel('b [fm]', fontsize = 18)
 plt.ylabel(r'$\left< N_{col} \right>$ ', fontsize = 18)
 plt.title('Average collisions for Au79-Au79', fontsize = 24)
-
+plt.legend(fontsize = 16)
 plt.tick_params(axis='both', which='major', labelsize=16)  # ticks font size
 
 plt.show()
