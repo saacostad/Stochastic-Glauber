@@ -103,7 +103,7 @@ std::array<double, 3> sampleNucleon(std::mt19937 &gen, Nucleus prevNucleus,
             double dx = ret[0] - nuc[0];
             double dy = ret[1] - nuc[1];
             double dz = ret[2] + nuc[2];
-            //
+
 
             // RESAMPLEO ORIGINAL
             // double dx = ret[0] - nuc[0];
@@ -126,7 +126,7 @@ std::array<double, 3> sampleNucleon(std::mt19937 &gen, Nucleus prevNucleus,
         // if (valid == false){cerr << "And it is still like it" << endl;}
 
         if (valid)
-            return ret;  // ✅ valid nucleon found — done    }
+            return ret; 
     } 
 }
 
@@ -153,7 +153,6 @@ std::vector<std::array<double, 3>> createNucleus(   int A, double nucleon_radius
                 SH_positive_coef, SH_negative_coef,
                 rad_density_params);
 
-        // TODO make a function to evaluate the proximity of each nucleon 
 
         nucleus.push_back(nucleon);
     }

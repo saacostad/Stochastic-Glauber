@@ -131,6 +131,8 @@ int main(int argc, char* argv[]){
 
         const size_t total_combinations = no_rot * no_rot;
         const size_t total_iterations = tarjets.size() * projectiles.size() * total_combinations; 
+        const double tot_systems = tarjets.size()*projectiles.size();
+
 
         vector<Nucleus> rotated_nucleus_proj;
         vector<Nucleus> rotated_nucleus_tarj;
@@ -230,9 +232,11 @@ int main(int argc, char* argv[]){
             double mean_cols      = g_cols.mean;
             double std_dev_parts   = std::sqrt(g_part.M2 / (g_part.n - 1));
             double mean_parts      = g_part.mean;
+            
+            double error_col = 1.96 / std::sqrt(tot_systems) * std_dev_cols;
+            double error_part = 1.96 / std::sqrt(tot_systems) * std_dev_parts;
 
-
-            file << b << "," << mean_cols << "," << std_dev_cols << "," << mean_parts << "," << std_dev_parts << "\n";
+            file << b << "," << mean_cols << "," << error_col << "," << mean_parts << "," << error_part << "\n";
 
         }
 
