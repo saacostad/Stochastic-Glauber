@@ -25,6 +25,32 @@
 
 
 
+struct Stats {
+    long long n = 0;
+    double mean = 0.0;
+    double M2 = 0.0;
+
+    void update(double x) {
+        n++;
+        double delta = x - mean;
+        mean += delta / n;
+        double delta2 = x - mean;
+        M2 += delta * delta2;
+    }
+
+    void merge(const Stats& other) {
+        if (other.n == 0) return;
+        long long n_total = n + other.n;
+        double delta = other.mean - mean;
+
+        mean += delta * other.n / n_total;
+        M2 += other.M2 + delta * delta * n * other.n / n_total;
+
+        n = n_total;
+    }
+};
+
+
 
 int main(int argc, char* argv[]){
     
@@ -100,31 +126,39 @@ int main(int argc, char* argv[]){
 
         }
 
-        vector<Quaternion> quaternions_tarjet;
-        vector<Quaternion> quaternions_projectile;
 
         int no_rot = result["rotations"].as<int>();
+
+        const size_t total_combinations = no_rot * no_rot;
+        const size_t total_iterations = tarjets.size() * projectiles.size() * total_combinations; 
+
+        vector<Nucleus> rotated_nucleus_proj;
+        vector<Nucleus> rotated_nucleus_tarj;
+       
+        rotated_nucleus_tarj.reserve(tarjets.size() * no_rot);
+        rotated_nucleus_proj.reserve(projectiles.size() * no_rot);
+
+        for (int i = 1; i <= no_rot; i++){
+            for (const auto &nuc : tarjets){
+                vector<double> angs = angularDistribution(eng);
+                double theta = angs[0];
+                double phi = angs[1];
+
+                rotated_nucleus_tarj.push_back(rotateNucleus( nuc , createQuaternion(theta, phi)));
+            }
+        }
+
+        for (int i = 1; i <= no_rot; i++){
+            for (const auto &nuc : projectiles){
+                vector<double> angs = angularDistribution(eng);
+                double theta = angs[0];
+                double phi = angs[1];
+
+                rotated_nucleus_proj.push_back(rotateNucleus( nuc , createQuaternion(theta, phi)));
+            }
+        }
         
-        for (int i = 1; i <= no_rot; i++){
-            vector<double> angs = angularDistribution(eng);
-            double theta = angs[0];
-            double phi = angs[1];
-
-
-            // double theta = 0.0;
-            // double phi = 0.0;
-            quaternions_tarjet.push_back(createQuaternion(theta, phi));
-        }
-
-        for (int i = 1; i <= no_rot; i++){
-            vector<double> angs = angularDistribution(eng);
-            double theta = angs[0];
-            double phi = angs[1];
-                
-            // double theta = 0.0;
-            // double phi = 0.0;
-            quaternions_projectile.push_back(createQuaternion(theta, phi));
-        }
+        cout << "Finished rotating nuclei \n ---------------------" << endl;
 
         // for the progress bar
         int totalSteps = static_cast<int>((bMax) / bDelta) + 1;
@@ -135,30 +169,48 @@ int main(int argc, char* argv[]){
             long int collision_counter = 0;
             long long int NO_collissions = 0;
             long long int NO_participants_1 = 0;
+            
+            Stats g_cols, g_part;
 
-            #pragma omp parallel for reduction(+:NO_collissions, NO_participants_1, collision_counter) schedule(dynamic) collapse(4)
-            for (size_t i = 0; i < tarjets.size(); ++i) {
-                for (size_t j = 0; j < projectiles.size(); ++j) {
+            #pragma omp parallel
+            {
+            
+                Stats l_cols, l_parts;
 
-                    const Nucleus& nuc_tarjet = tarjets[i];
-                    const Nucleus& nuc_projectile = projectiles[j];
+                #pragma omp for reduction(+:NO_collissions, NO_participants_1, collision_counter) schedule(dynamic) 
+                for (size_t idx = 0; idx < tarjets.size() * projectiles.size() * total_combinations; ++idx) {
+                    // Compute indices from flattened index
+                    size_t quat_combo = idx % total_combinations;
+                    size_t temp = idx / total_combinations;
+                    size_t j = temp % projectiles.size();
+                    size_t i = temp / projectiles.size();
                     
-                    for (const auto& qt : quaternions_tarjet){
-                        for (const auto& qp : quaternions_projectile){
-                            // array<int, 3> ret = checkCollisions(nuc_projectile, nuc_tarjet, b, nucleon_radius);
-                            const array<int, 3> ret = checkCollisions(
-                                    rotateNucleus(nuc_projectile, qp), 
-                                    rotateNucleus(nuc_tarjet, qt), 
-                                    b, nucleon_radius);
-                            NO_collissions += ret[0];
-                            NO_participants_1 += ret[1] + ret[2];
-                            
-                            collision_counter++;
+                    size_t qp_idx = quat_combo % no_rot;
+                    size_t qt_idx = quat_combo / no_rot;
+                    
+                    size_t rot_tarjet_idx = i * no_rot + qt_idx;
+                    size_t rot_proj_idx = j * no_rot + qp_idx;
+                    
+                    const array<int, 3> ret = checkCollisions(
+                        rotated_nucleus_proj[rot_proj_idx], 
+                        rotated_nucleus_tarj[rot_tarjet_idx], 
+                        b, nucleon_radius);   
+                    
+                    l_cols.update(ret[0]);
+                    l_parts.update(ret[1] + ret[2]);
 
-                        }
-                    }
+
+                    // NO_collissions += ret[0];
+                    // NO_participants_1 += ret[1] + ret[2];
+                    // collision_counter++;
+                } 
+                
+                #pragma omp critical
+                {
+                    g_cols.merge(l_cols);
+                    g_part.merge(l_parts);
                 }
-            }  
+            }
             // Progress bar AFTER the parallel region (safe!)
             currentStep++;
             float progress = static_cast<float>(currentStep) / totalSteps;
@@ -174,7 +226,13 @@ int main(int argc, char* argv[]){
             std::cout << "] " << int(progress * 100.0) << "%\r";
             std::cout.flush();
 
-            file << b << "," << double(NO_collissions) / double(collision_counter) << "," << double(NO_participants_1) / double(collision_counter) << "\n";
+            double std_dev_cols   = std::sqrt(g_cols.M2 / (g_cols.n - 1));
+            double mean_cols      = g_cols.mean;
+            double std_dev_parts   = std::sqrt(g_part.M2 / (g_part.n - 1));
+            double mean_parts      = g_part.mean;
+
+
+            file << b << "," << mean_cols << "," << std_dev_cols << "," << mean_parts << "," << std_dev_parts << "\n";
 
         }
 
