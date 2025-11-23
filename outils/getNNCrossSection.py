@@ -105,5 +105,6 @@ def SigI(BE):
 
 with open("systems/NNCrossSection.csv", "w") as file:
     
-    for EB in range(50, 500, 10):
+    for EB in range(50, 500, 1):
         file.write(f"{EB},{SigI(EB)}\n")
+    file.write(f"5020,{SigI(5020.0)}\n")

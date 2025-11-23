@@ -1,22 +1,29 @@
 import numpy as np 
 from scipy.integrate import simpson
 import matplotlib.pyplot as plt 
+# from outils.getNNCrossSection import Ecm
 from uncertainties import ufloat
 from uncertainties import unumpy as unp
 
+A = 197
+B = 197
+A_el = "Au"
+B_el = "Au"
 
-sigma_nn = 41.23344641671908
-n = 238
-# n = 197
+energy = 200
+fileName = "data.csv"
 
-collision_name = "U238-U238"
 
-data = np.genfromtxt("rotated_uranium.csv", delimiter=",")
-# data = np.genfromtxt("data_test.csv", delimiter=",")
+collision_name = f"{A_el}{A}-{B_el}{B}"
+system = collision_name
+
+
+
+
+data = np.genfromtxt(f"systems/{system}/{energy}/{fileName}", delimiter=",")
 
 
 x = data[:, 0]          # Impact parameter
-
 
 Ncolls = data[:, 1]     # Collisions 
 Ncolls_std = data[:, 2] # Uncertainty collisions 
@@ -24,7 +31,7 @@ Ncolls_std = data[:, 2] # Uncertainty collisions
 Ncolls_u = unp.uarray(Ncolls, Ncolls_std)
 
 # Stuff that makes the predictions
-y_prev = 2 * np.pi * ( 1 - unp.pow(1 - Ncolls_u / (n**2), n**2) ) * x
+y_prev = 2 * np.pi * ( 1 - unp.pow(1 - Ncolls_u / (A*B), A*B) ) * x
 
 
 y_c = unp.nominal_values(y_prev)
@@ -46,7 +53,7 @@ plt.ylabel(r'$d \sigma_{inel} \, / \, db$ [$fm^2 / fm$]', fontsize = 18)
 plt.title('Inelastic Cross Section for ' + collision_name, fontsize = 24)
 
 plt.tick_params(axis='both', which='major', labelsize=16)  # ticks font size
-
+plt.savefig(f"systems/{system}/{energy}/{fileName[0:-4]}_dsdb.png")
 plt.show()
 
 
@@ -67,10 +74,11 @@ plt.title('Average collisions for ' + collision_name, fontsize = 24)
 plt.legend(fontsize = 16)
 plt.tick_params(axis='both', which='major', labelsize=16)  # ticks font size
 
+plt.savefig(f"systems/{system}/{energy}/{fileName[0:-4]}_colls.png")
 plt.show()
 
 integral_c = simpson(y_c, x) * 10
 integral_u = simpson(y_c+y_e, x) * 10
 integral_d = simpson(y_c-y_e, x) * 10
 
-print(f"Calculated Cross Section = {integral_c} +- {integral_u - integral_c}")
+print(f"Calculated Cross Section for {system} at Ecm {energy} GeV = {integral_c} +- {integral_u - integral_c}")

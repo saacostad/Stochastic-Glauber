@@ -118,7 +118,12 @@ int main(int argc, char* argv[]){
         std::vector<Nucleus> tarjets, projectiles;
         readSystem(sysPath, energy, tarjets, projectiles, tarNucleons, projNucleons);
 
-        ofstream file(outPath);
+        ostringstream path;
+
+        path << sysPath << "/" << energy << "/" << outPath;
+        
+        std::cout << path.str() << std::endl;
+        ofstream file(path.str());
 
         if (!file){
             cerr << "ERROR WHEN OUTPUTING FILE \n";

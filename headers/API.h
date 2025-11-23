@@ -138,11 +138,15 @@ void writeSystem(   std::string path,
     double tarjet_SH_positive_coef[7][7];
     double tarjet_SH_negative_coef[7][7];
     double tarjet_rad_density_params[4];
+    //
+    // string tarjet_path_SH_pos_coef = "SHE/tp.csv";
+    // string tarjet_path_SH_neg_coef = "SHE/tn.csv";
+    // string tarjet_path_rad_den = "SHE/trad.csv";
 
-    string tarjet_path_SH_pos_coef = "SHE/tp.csv";
-    string tarjet_path_SH_neg_coef = "SHE/tn.csv";
-    string tarjet_path_rad_den = "SHE/trad.csv";
-
+    string tarjet_path_SH_pos_coef = path + "/tp.csv";
+    string tarjet_path_SH_neg_coef = path + "/tn.csv";
+    string tarjet_path_rad_den = path + "/trad.csv";
+    
     fillSphericalHarmonicsMatrix(tarjet_path_SH_pos_coef, tarjet_SH_positive_coef);
     fillSphericalHarmonicsMatrix(tarjet_path_SH_neg_coef, tarjet_SH_negative_coef);
     fillRadialDensityParams(tarjet_path_rad_den, tarjet_rad_density_params);
@@ -152,10 +156,14 @@ void writeSystem(   std::string path,
     double projectile_SH_negative_coef[7][7];
     double projectile_rad_density_params[4];
 
-    string projectile_path_SH_pos_coef = "SHE/pp.csv";
-    string projectile_path_SH_neg_coef = "SHE/pn.csv";
-    string projectile_path_rad_den = "SHE/prad.csv";
+    // string projectile_path_SH_pos_coef = "SHE/pp.csv";
+    // string projectile_path_SH_neg_coef = "SHE/pn.csv";
+    // string projectile_path_rad_den = "SHE/prad.csv";
 
+    string projectile_path_SH_pos_coef = path + "/pp.csv";
+    string projectile_path_SH_neg_coef = path + "/pn.csv";
+    string projectile_path_rad_den = path + "/prad.csv";
+    
     fillSphericalHarmonicsMatrix(projectile_path_SH_pos_coef, projectile_SH_positive_coef);
     fillSphericalHarmonicsMatrix(projectile_path_SH_neg_coef, projectile_SH_negative_coef);
     fillRadialDensityParams(projectile_path_rad_den, projectile_rad_density_params);
